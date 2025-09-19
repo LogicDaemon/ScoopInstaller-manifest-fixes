@@ -1,0 +1,61 @@
+{
+    "version": "1.5.7",
+    "description": "The AI Code Editor",
+    "homepage": "https://www.cursor.com/",
+    "license": {
+        "identifier": "Proprietary",
+        "url": "https://www.cursor.com/terms-of-service"
+    },
+    "innosetup": true,
+    "architecture": {
+        "64bit": {
+            "url": "https://downloads.cursor.com/production/6aa7b3af0d578b9a3aa3ab443571e1a51ebb4e83/win32/x64/user-setup/CursorUserSetup-x64-1.5.7.exe",
+            "hash": "ddb67c4bd75a0789f24c88836658ea236f1270e5177338410ad3363e51cc93d3"
+        },
+        "arm64": {
+            "url": "https://downloads.cursor.com/production/6aa7b3af0d578b9a3aa3ab443571e1a51ebb4e83/win32/arm64/user-setup/CursorUserSetup-arm64-1.5.7.exe",
+            "hash": "2d9b66e1b27d98062cd2c9ef98b69249fb2c2dc02f68c24f26d2a52d54cf00ec"
+        }
+    },
+    "extract_dir": "{code_GetDestDir}",
+    "pre_uninstall": [
+        "foreach ($p in @(\"$env:USERPROFILE\\.cursor\", \"$env:APPDATA\\Cursor\")) {",
+        "    if ((Test-Path $p) -and ((Get-Item $p).Attributes -match 'ReparsePoint')) {",
+        "        Remove-Item $p",
+        "    }",
+        "}"
+    ],
+    "post_install": [
+        "Remove-item \"$dir\\`$*\", \"$dir\\Uninst*\" -Recurse",
+        "if (!(Test-Path \"$persist_dir\\user-data\")) { New-Item -Path \"$persist_dir\\user-data\" -ItemType Directory }",
+        "if (!(Test-Path \"$persist_dir\\.cursor\")) { New-Item -Path \"$persist_dir\\.cursor\" -ItemType Directory }",
+        "$appDataCursor = \"$env:APPDATA\\Cursor\"",
+        "if (Test-Path $appDataCursor) { Remove-Item $appDataCursor }",
+        "New-Item -Path $appDataCursor -ItemType Junction -Target \"$persist_dir\\user-data\"",
+        "$profileCursor = \"$env:USERPROFILE\\.cursor\"",
+        "if (Test-Path $profileCursor) { Remove-Item $profileCursor }",
+        "New-Item -Path $profileCursor -ItemType Junction -Target \"$persist_dir\\.cursor\""
+    ],
+    "bin": "resources\\app\\bin\\cursor.cmd",
+    "shortcuts": [
+        [
+            "Cursor.exe",
+            "Cursor"
+        ]
+    ],
+    "persist": "data",
+    "checkver": {
+        "url": "https://www.cursor.com/api/download?platform=win32-x64-user&releaseTrack=stable",
+        "regex": "production/(?<Code>[\\w]+)/win32.*-([\\d.]+)\\.exe"
+    },
+    "autoupdate": {
+        "architecture": {
+            "64bit": {
+                "url": "https://downloads.cursor.com/production/$matchCode/win32/x64/user-setup/CursorUserSetup-x64-$version.exe"
+            },
+            "arm64": {
+                "url": "https://downloads.cursor.com/production/$matchCode/win32/arm64/user-setup/CursorUserSetup-arm64-$version.exe"
+            }
+        }
+    }
+}
