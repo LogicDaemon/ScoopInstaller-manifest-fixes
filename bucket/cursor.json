@@ -43,11 +43,10 @@
             "Cursor"
         ]
     ],
-    "persist": "data",
     "checkver": {
-        "url": "https://cursor.com/api/download?platform=win32-x64&releaseTrack=latest",
-        "jsonpath": "$.downloadUrl",
-        "regex": "production/(?<Code>[\\w]+)/.*(?<version>[\\d.]+)\\.exe"
+        "url": "https://cursor.com/api/download",
+        "regex": "href=\\\"https://downloads\\.cursor\\.com/production/(?<Code>[a-f\\d]+)/win32/x64/user-setup/CursorUserSetup-x64-(?<version>[\\d.]+)\\.exe\\\"",
+        "replace": "${version}"
     },
     "autoupdate": {
         "architecture": {
