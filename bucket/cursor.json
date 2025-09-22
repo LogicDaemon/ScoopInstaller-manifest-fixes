@@ -20,9 +20,7 @@
     "extract_dir": "{code_GetDestDir}",
     "pre_uninstall": [
         "foreach ($p in @(\"$env:USERPROFILE\\.cursor\", \"$env:APPDATA\\Cursor\")) {",
-        "    if ((Test-Path $p) -and ((Get-Item $p).Attributes -match 'ReparsePoint')) {",
-        "        Remove-Item $p -Force",
-        "    }",
+        "    Get-Item $p -ErrorAction SilentlyContinue | Where-Object { $_.Attributes -match 'ReparsePoint' } | Remove-Item -Recurse -Force",
         "}"
     ],
     "post_install": [
@@ -30,10 +28,10 @@
         "if (!(Test-Path \"$persist_dir\\user-data\")) { New-Item -Path \"$persist_dir\\user-data\" -ItemType Directory }",
         "if (!(Test-Path \"$persist_dir\\.cursor\")) { New-Item -Path \"$persist_dir\\.cursor\" -ItemType Directory }",
         "$appDataCursor = \"$env:APPDATA\\Cursor\"",
-        "if (Test-Path $appDataCursor) { if ((Get-Item $appDataCursor).Attributes -match 'ReparsePoint') { Remove-Item $appDataCursor -Force } }",
+        "Get-Item $appDataCursor -ErrorAction SilentlyContinue | Where-Object { $_.Attributes -match 'ReparsePoint' } | Remove-Item -Recurse -Force",
         "New-Item -Path $appDataCursor -ItemType Junction -Target \"$persist_dir\\user-data\"",
         "$profileCursor = \"$env:USERPROFILE\\.cursor\"",
-        "if (Test-Path $profileCursor) { if ((Get-Item $profileCursor).Attributes -match 'ReparsePoint') { Remove-Item $profileCursor -Force } }",
+        "Get-Item $profileCursor -ErrorAction SilentlyContinue | Where-Object { $_.Attributes -match 'ReparsePoint' } | Remove-Item -Recurse -Force",
         "New-Item -Path $profileCursor -ItemType Junction -Target \"$persist_dir\\.cursor\""
     ],
     "bin": "resources\\app\\bin\\cursor.cmd",
