@@ -1,5 +1,5 @@
 {
-    "version": "25.5.1084",
+    "version": "25.9.1094",
     "description": "Chef Workstation is Chef's modern developer tool kit that includes Chef Infra, InSpec and Habitat plus a host of resources, helpers and testing tools that make automating infrastructure, application and security testing easier than ever. Chef Workstation supersedes ChefDK.",
     "homepage": "https://www.chef.io",
     "license": {
@@ -8,13 +8,11 @@
     },
     "architecture": {
         "64bit": {
-            "url": "https://packages.chef.io/files/stable/chef-workstation/25.5.1084/windows/2022/chef-workstation-25.5.1084-1-x64.msi",
-            "hash": "82f4e737bb475b190ff8dcbce1191fbe228991f65b481275550a97ca32056dc9"
+            "url": "https://packages.chef.io/files/stable/chef-workstation/25.9.1094/windows/2022/chef-workstation-25.9.1094-1-x64.msi",
+            "hash": "5c9b44efad5f2c71353048edd2d7e3079a316de5a96a1828d911e3093d3341e6"
         }
     },
-    "depends": [
-        "7zip"
-    ],
+    "depends": "7zip",
     "extract_dir": "opscode",
     "pre_install": "Expand-7zipArchive \"$dir\\chef-workstation.zip\" -Removal",
     "env_add_path": "bin",
