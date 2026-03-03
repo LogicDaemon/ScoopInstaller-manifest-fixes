@@ -1,0 +1,55 @@
+{
+    "version": "0.9.6",
+    "description": "Libre Hardware Monitor is free software that can monitor the temperature sensors, fan speeds, voltages, load and clock speeds of your computer.",
+    "homepage": "https://github.com/LibreHardwareMonitor/LibreHardwareMonitor",
+    "license": "MPL-2.0",
+    "architecture": {
+        "64bit": {
+            "url": "https://github.com/LibreHardwareMonitor/LibreHardwareMonitor/releases/download/v0.9.6/LibreHardwareMonitor.zip",
+            "hash": "086d9f1b5a99e643edc2cfaaac16051685b551e4c5ac0b32a57c58c0e529c001"
+        }
+    },
+    "post_install": [
+        "Remove-Item -Path \"$dir\\*.pdb\" -Force -ErrorAction SilentlyContinue",
+        "$configPath = \"$dir\\LibreHardwareMonitor.config\"",
+        "$origConfigPath = \"$dir\\LibreHardwareMonitor.config.orig\"",
+        "$persistConfigPath = \"$persist_dir\\LibreHardwareMonitor.config\"",
+        "if (Test-Path -LiteralPath $persistConfigPath) {",
+        "    if (Test-Path -LiteralPath $configPath) {",
+        "        if (Test-Path -LiteralPath $origConfigPath) { Remove-Item -LiteralPath $origConfigPath -Force }",
+        "        Rename-Item -LiteralPath $configPath -NewName ([System.IO.Path]::GetFileName($origConfigPath))",
+        "    }",
+        "    try {",
+        "        New-Item -Path $configPath -ItemType SymbolicLink -Target $persistConfigPath -ErrorAction Stop",
+        "    } catch {",
+        "        New-Item -Path $configPath -ItemType HardLink -Target $persistConfigPath",
+        "    }",
+        "}"
+    ],
+    "pre_uninstall": [
+        "$configPath = \"$dir\\LibreHardwareMonitor.config\"",
+        "$persistConfigPath = \"$persist_dir\\LibreHardwareMonitor.config\"",
+        "if (Test-Path -LiteralPath $configPath) {",
+        "    $configItem = Get-Item -LiteralPath $configPath",
+        "    if ($configItem.LinkType -ne 'SymbolicLink') {",
+        "        if (!(Test-Path -LiteralPath $persist_dir)) { New-Item -Path $persist_dir -ItemType Directory }",
+        "        if (Test-Path -LiteralPath $persistConfigPath) { Remove-Item -LiteralPath $persistConfigPath -Force }",
+        "        Move-Item -LiteralPath $configPath -Destination $persistConfigPath -Force",
+        "    }",
+        "}"
+    ],
+    "shortcuts": [
+        [
+            "LibreHardwareMonitor.exe",
+            "Libre Hardware Monitor"
+        ]
+    ],
+    "checkver": "github",
+    "autoupdate": {
+        "architecture": {
+            "64bit": {
+                "url": "https://github.com/LibreHardwareMonitor/LibreHardwareMonitor/releases/download/v$version/LibreHardwareMonitor.zip"
+            }
+        }
+    }
+}
