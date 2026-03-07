@@ -1,5 +1,5 @@
 ---
-description: "Use when creating or modifying Scoop manifests in this bucket. Covers schema-safe fields, checkver/autoupdate consistency, architecture blocks, hash updates, and validation workflow."
+description: "for Scoop manifests fixes. Covers schema-safe fields, checkver/autoupdate consistency, architecture blocks, hash updates, and validation workflow."
 name: "Scoop manifest authoring (bucket fixes)"
 applyTo: "bucket/*.json"
 ---
@@ -18,7 +18,7 @@ check the specific workspace contents when starting working on it to find out th
 ## Scope and source of truth
 
 - Only modify files in this repository (`ScoopInstaller-manifest-fixes`).
-- Treat `Scoop/schema.json` as the schema authority (`additionalProperties: false`).
+- Treat `schema.json` as the schema authority (`additionalProperties: false`).
 - Reuse patterns from existing manifests before inventing new structure.
 
 ## Editing principles
@@ -45,12 +45,11 @@ check the specific workspace contents when starting working on it to find out th
 ## Hash and URL integrity
 
 - Every changed download URL must have a matching updated `hash` (or a valid `autoupdate.hash` extraction strategy).
-- Keep hash algorithm format schema-compliant (typically SHA256 hex).
-- Do not leave placeholder hashes in committed manifests.
+- Hash must match the actual downloaded file or CI fails.
 
 ## Script blocks
 
-- Keep PowerShell snippets concise, idempotent where practical, and compatible with Windows PowerShell.
+- Keep PowerShell snippets concise and preferrably idempotent.
 
 ## Preserving configuration
 
@@ -60,7 +59,6 @@ check the specific workspace contents when starting working on it to find out th
 - If in a subdir in the app dir, make a junction (reparse point) from the persist dir to the app dir (no need to move, junctions do not require admin privileges)
   * If the config subdir is installed along with the app, rename it before creating the junction, then move the contents to the persist subdir without overwriting any files, so if there were no config, the default one will be used, but otherwise, the existing one will be preserved.
 - If app config is not in the app dir, make junctions from persist to their location
-
 
 ## Validation workflow
 

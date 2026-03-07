@@ -1,0 +1,56 @@
+{
+    "version": "0.17.7",
+    "description": "Get up and running with large language models locally.",
+    "homepage": "https://ollama.com/",
+    "license": "MIT",
+    "url": "https://github.com/ollama/ollama/releases/download/v0.17.7/OllamaSetup.exe",
+    "hash": "6d1e32298259cf1ac19b240cd8244a0697753c8ba425e0707e9223725324694a",
+    "installer": {
+        "script": [
+            "$temp_install_dir = Join-Path $dir 'tempinstall'",
+            "$install_args = @('/SP-', '/VERYSILENT', '/SUPPRESSMSGBOXES', '/NORESTART', '/NOICONS', ('/DIR=\"' + $temp_install_dir + '\"'))",
+            "New-Item -ItemType Directory -Path $temp_install_dir -Force | Out-Null",
+            "$setup = Start-Process (Join-Path $dir $fname) -ArgumentList $install_args -WorkingDirectory $dir -PassThru",
+            "$setup.WaitForExit()",
+            "if ($setup.ExitCode -ne 0) { throw \"Ollama installer failed with exit code $($setup.ExitCode).\" }",
+            "'ollama app.exe', 'ollama.exe' | ForEach-Object { Start-Process (Join-Path $env:SystemRoot 'System32\\taskkill.exe') -ArgumentList @('/im', $_, '/f', '/t') -WindowStyle Hidden -Wait -ErrorAction SilentlyContinue | Out-Null }",
+            "$uninstaller = Get-ChildItem $temp_install_dir -Filter 'unins*.exe' -File | Select-Object -First 1",
+            "if ($null -eq $uninstaller) { throw 'Ollama installer did not produce an Inno Setup uninstaller.' }",
+            "Get-ChildItem $temp_install_dir -Recurse -File | Where-Object { $_.Name -notlike 'unins*.*' } | ForEach-Object {",
+            "    $relative_path = $_.FullName.Substring($temp_install_dir.Length + 1)",
+            "    $target_path = Join-Path $dir $relative_path",
+            "    $target_parent = Split-Path -Parent $target_path",
+            "    if (!(Test-Path $target_parent)) { New-Item -ItemType Directory -Path $target_parent -Force | Out-Null }",
+            "    try {",
+            "        New-Item -ItemType HardLink -Path $target_path -Target $_.FullName -Force | Out-Null",
+            "    } catch {",
+            "        Copy-Item $_.FullName $target_path -Force",
+            "    }",
+            "}",
+            "$uninstall = Start-Process $uninstaller.FullName -ArgumentList @('/VERYSILENT', '/SUPPRESSMSGBOXES', '/NORESTART') -WorkingDirectory $env:TEMP -Wait -PassThru",
+            "if ($uninstall.ExitCode -ne 0) { throw \"Ollama uninstall failed with exit code $($uninstall.ExitCode). The staged installation was left in '$temp_install_dir' so the uninstall can be completed manually.\" }"
+        ]
+    },
+    "post_install": [
+        "Remove-Item \"$dir\\$fname\" -Force -ErrorAction SilentlyContinue",
+        "Remove-Item \"$dir\\unins*\" -Force -ErrorAction SilentlyContinue"
+    ],
+    "bin": "ollama.exe",
+    "shortcuts": [
+        [
+            "ollama app.exe",
+            "Ollama",
+            "",
+            "app.ico"
+        ]
+    ],
+    "checkver": {
+        "github": "https://github.com/ollama/ollama"
+    },
+    "autoupdate": {
+        "url": "https://github.com/ollama/ollama/releases/download/v$version/OllamaSetup.exe",
+        "hash": {
+            "url": "$baseurl/sha256sum.txt"
+        }
+    }
+}
