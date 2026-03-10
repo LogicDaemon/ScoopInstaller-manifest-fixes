@@ -54,8 +54,8 @@
         ]
     ],
     "checkver": {
-        "url": "https://docs.chef.io/release_notes_workstation/",
-        "regex": "id=[\\\"']?chef-workstation-release-notes[\\\"']?[\\s\\S]*?<h2\\s+id=[\\\"']?([0-9.]+)[\\\"']?"
+        "url": "https://docs.chef.io/release_notes/workstation/",
+        "regex": "id=[\\\"']?chef-workstation-release-notes[\\\"']?[\\s\\S]*?<h2[^>]*>Chef Workstation\\s+([0-9.]+)</h2>"
     },
     "autoupdate": {
         "architecture": {
