@@ -24,7 +24,7 @@ The upstream manifest lacks configuration persistence. This version adds pre-uni
 
 ### python
 
-On my corporate notebook, there is a system-wide Python 3.13 installation in `%ProgramFiles%`, which is registered globally in the Windows Registry. This causes `py.exe` to only find that ancient system-wide install, unless the PEP 514 registry keys are added for the Scoop installation too. But in the main bucket manifest, it's a manual procedure both to add them and remove them before uninstalling.
+On my corporate notebook, there is a system-wide Python 3.10 installation in `%ProgramFiles%`, which is registered globally in the Windows Registry. This causes `py.exe` to only find that ancient system-wide install, unless the PEP 514 registry keys are added for the Scoop installation too. But in the main bucket manifest, it's a manual procedure both to add them and remove them before uninstalling.
 
 My manifest imports the install reg file after installing, and the uninstall reg file before uninstalling.
 
@@ -37,3 +37,7 @@ Fixes an extraction path issue introduced in version 2.53.8 where the binaries a
 Fixes URL and regex for checkver, and works around execution failures that occur when running batch shims from different drives.
 Introduces a custom shim implementation for batch files in the bin directory. This replaces the existing Ruby shims with a patched version that safely handles drive letter mismatches by pushing to the temporary directory when necessary.
 There is also an embedded comment explaining how to use the knife without admin privileges.
+
+### cinc-workstation
+
+A free-as-in-beer, open source build of Chef Workstation. Includes the same batch shim fixes as `chef-workstation`, properly handling drive letter mismatches by pushing to a temporary directory when necessary.

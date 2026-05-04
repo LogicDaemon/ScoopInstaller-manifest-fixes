@@ -40,7 +40,7 @@
         "EXIT /B 1",
         ")",
         "'@",
-        "$shim_path = \"$dir\\bin\\\"",
+        "$shim_path = \"$dir\\bin\\patched_shim.bat\"",
         "$shim_content = $shim_content -replace \"`r?`n\", \"`r`n\"",
         "Set-Content -Path $shim_path -Value $shim_content -Encoding Ascii",
         "",
