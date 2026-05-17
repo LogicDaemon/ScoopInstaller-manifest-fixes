@@ -33,7 +33,22 @@
     },
     "post_install": [
         "Remove-Item \"$dir\\$fname\" -Force -ErrorAction SilentlyContinue",
-        "Remove-Item \"$dir\\unins*\" -Force -ErrorAction SilentlyContinue"
+        "Remove-Item \"$dir\\unins*\" -Force -ErrorAction SilentlyContinue",
+        "if (!(Test-Path \"$persist_dir\")) { New-Item -Path \"$persist_dir\" -ItemType Directory }",
+        "$appDataOllama = \"$env:LOCALAPPDATA\\Ollama\"",
+        "$item = Get-Item $appDataOllama -ErrorAction SilentlyContinue",
+        "if ($item) {",
+        "    if ($item.Attributes -notmatch 'ReparsePoint') {",
+        "        Copy-Item \"$appDataOllama\\*\" \"$persist_dir\\\" -Recurse -Force -ErrorAction SilentlyContinue",
+        "        Remove-Item $appDataOllama -Recurse -Force -ErrorAction SilentlyContinue",
+        "    } else {",
+        "        Remove-Item $appDataOllama -Force -ErrorAction SilentlyContinue",
+        "    }",
+        "}",
+        "New-Item -Path $appDataOllama -ItemType Junction -Target \"$persist_dir\""
+    ],
+    "pre_uninstall": [
+        "Get-Item \"$env:LOCALAPPDATA\\Ollama\" -ErrorAction SilentlyContinue | Where-Object { $_.Attributes -match 'ReparsePoint' } | Remove-Item -Force -ErrorAction SilentlyContinue"
     ],
     "bin": "ollama.exe",
     "shortcuts": [
