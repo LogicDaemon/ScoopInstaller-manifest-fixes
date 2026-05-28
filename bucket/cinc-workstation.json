@@ -1,12 +1,12 @@
 {
-    "version": "26.0.2",
+    "version": "26.1.0",
     "description": "Cinc Workstation is a free-as-in-beer, open source build of Chef Workstation.",
     "homepage": "https://cinc.sh",
     "license": "Apache-2.0",
     "architecture": {
         "64bit": {
-            "url": "https://packages.cinc.sh/files/stable/cinc-workstation/26.0.2/windows/2012r2/cinc-workstation-26.0.2-1-x64.msi",
-            "hash": "d493bf085828149c86a5b4bd9a7f5179de1c3a2882af2be5b84fe07d80e30d94"
+            "url": "https://packages.cinc.sh/files/stable/cinc-workstation/26.1.0/windows/2012r2/cinc-workstation-26.1.0-1-x64.msi",
+            "hash": "bb48f468ba857e7d6d2414d145af0e3b33bcb57ab6051b082c3e224d1390fe2a"
         }
     },
     "depends": "7zip",
